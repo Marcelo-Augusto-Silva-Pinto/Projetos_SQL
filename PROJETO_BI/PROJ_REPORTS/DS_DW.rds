@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="DS_DW">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=BISERVER01;Initial Catalog=COMERCIO_DW</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>d481d2e1-ed26-498b-b70d-a8e7ba531b8c</DataSourceID>
+</RptDataSource>
