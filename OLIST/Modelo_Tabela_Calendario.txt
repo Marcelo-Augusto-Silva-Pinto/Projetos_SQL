@@ -1,0 +1,30 @@
+let
+
+		Tabela = List.Buffer(fVendas[Data]),
+
+    	MinDate = List.Min(Tabela),
+   		MaxDate = List.Max(Tabela),
+   		MaxYear = Date.Year(MaxDate),
+    	MinYear = Date.Year(MinDate),
+   		InitialDate = #date(MinYear,1,1),
+  		EndDate = #date(MaxYear,12,31),
+
+   		Duration = Duration.Days(EndDate-InitialDate) +1,
+    
+
+    	Fonte = List.Dates(InitialDate, Duration, #duration(1, 0, 0, 0)),
+    	#"Convertido para Tabela" = Table.FromList(Fonte, Splitter.SplitByNothing(), null, null,ExtraValues.Error),
+   		#"Colunas Renomeadas" = Table.RenameColumns(#"Convertido para Tabela",{{"Column1", "Data"}}),
+    	#"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Data", type date}}),
+    #"Ano Inserido" = Table.AddColumn(#"Tipo Alterado", "Ano", each Date.Year([Data]), Int64.Type),
+    #"Nome do Mês Inserido" = Table.AddColumn(#"Ano Inserido", "Nome do Mês", each Date.MonthName([Data]), type text),
+    #"Mês Inserido" = Table.AddColumn(#"Nome do Mês Inserido", "Mês", each Date.Month([Data]), Int64.Type),
+    #"Dia Inserido" = Table.AddColumn(#"Mês Inserido", "Dia", each Date.Day([Data]), Int64.Type),
+    #"Nome do Dia Inserido" = Table.AddColumn(#"Dia Inserido", "Nome do Dia", each Date.DayOfWeekName([Data]), type text),
+    #"Trimestre Inserido" = Table.AddColumn(#"Nome do Dia Inserido", "Trimestre", each Date.QuarterOfYear([Data]), Int64.Type),
+    #"Prefixo Adicionado" = Table.TransformColumns(#"Trimestre Inserido", {{"Trimestre", each "T" & Text.From(_, "pt-BR"), type text}}),
+    #"Coluna Personalizada Adicionada" = Table.AddColumn(#"Prefixo Adicionado", "Mes e Ano", each Text.Combine({Text.Start(Text.Proper([Nome do Mês]), 3), " ", Text.From([Ano], "pt-BR")}), type text),
+    #"Coluna Personalizada Adicionada1" = Table.AddColumn(#"Coluna Personalizada Adicionada", "Ano Mes Num", each Text.Combine({Text.From([Ano], "pt-BR"), Text.PadStart(Text.From([Mês], "pt-BR"), 2, "0")}), type text),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Coluna Personalizada Adicionada1",{{"Ano Mes Num", Int64.Type}})
+in
+    #"Tipo Alterado1"
